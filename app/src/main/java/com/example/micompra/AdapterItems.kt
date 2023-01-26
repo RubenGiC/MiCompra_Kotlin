@@ -10,6 +10,7 @@ import com.example.micompra.Models.Item
 
 /**
  * Clase que rellenara la listview de forma personalizada
+ * https://cursokotlin.com/capitulo-15-recyclerview-kotlin/
  */
 class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
 
