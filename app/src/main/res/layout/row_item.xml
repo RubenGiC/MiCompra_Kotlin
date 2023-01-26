@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:paddingRight="10dp"
+
+        app:srcCompat="@drawable/ic_baseline_image_not_supported_24"
+        android:contentDescription="@string/imagen" />
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/t_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nombre_item" />
+
+        <TextView
+            android:id="@+id/t_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/precio_item" />
+
+        <TextView
+            android:id="@+id/t_market"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/supermercado" />
+    </LinearLayout>
+</LinearLayout>
+
