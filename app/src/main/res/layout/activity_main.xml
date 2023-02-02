@@ -28,29 +28,28 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/hello_first_fragment"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:backgroundTint="#8DEDA3"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:paddingTop="50dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#3E80ED99"
+        android:paddingTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
             <!--https://stackoverflow.com/questions/1957831/center-a-button-in-a-linear-layout -->
-            <!--<ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/lv_items"/>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp" />
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                android:paddingTop="10dp" />
 
             <!--<Button
                 android:id="@+id/button_first"

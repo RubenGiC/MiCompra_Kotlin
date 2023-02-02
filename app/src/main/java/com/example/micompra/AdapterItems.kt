@@ -62,8 +62,6 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
          */
         fun bind(item:Item, context: Context){
             titulo.text = item.name
-            precio.text = item.price.toString()
-            market.text = item.id_market.toString()
             //NO FUNCIONA
             /*itemView.setOnClickListener(View.OnClickListener {
                 Toast.makeText(context,item.toString(), Toast.LENGTH_LONG)

@@ -5,7 +5,5 @@ package com.example.micompra.Models
  * Contiene:
  * - id         entero
  * - name       texto
- * - price      Flotante
- * - id_market  entero      (referencia al id Market)
  */
-data class Item(val id:Int, var name:String, var price:Float, val id_market:Int)
+data class Item(val id:Long, var name:String)

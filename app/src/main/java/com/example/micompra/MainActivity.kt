@@ -9,10 +9,18 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.micompra.Models.ItemProvider
 import com.example.micompra.databinding.ActivityMainBinding
+
+/**
+ * IDEAS
+ * https://www.geeksforgeeks.org/theming-floating-action-button-with-bottom-navigation-bar-in-android/
+ *
+ */
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,11 +58,12 @@ class MainActivity : AppCompatActivity() {
      * Crea el contenido del RecyclerView
      */
     fun setUpRecyclerView(){
-        val lista = ItemProvider.listItems()
+        val lista = ItemProvider.listItems(this)
 
         rv_item = binding.rvItems //accedo al recyclerView
-        rv_item.setHasFixedSize(true)
-        rv_item.layoutManager = LinearLayoutManager(this)
+        rv_item.layoutManager = GridLayoutManager(applicationContext, 2)
+        //rv_item.setHasFixedSize(true)
+        //rv_item.layoutManager = LinearLayoutManager(this)
         adapter.AdapterItems(lista, this)//crea el adaptador para el RecyclerView
         rv_item.adapter = adapter
     }
