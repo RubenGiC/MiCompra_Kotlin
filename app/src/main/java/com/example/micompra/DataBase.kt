@@ -59,6 +59,6 @@ class FeedReaderDbHelper(context: Context): SQLiteOpenHelper(context, DATABAASE_
 
     companion object{
         const val DATABAASE_NAME = "MiCompra.db" // nombre de la base de datos
-        const val DATABASE_VERSION = 1 // versión
+        const val DATABASE_VERSION = 2 // versión
     }
 }

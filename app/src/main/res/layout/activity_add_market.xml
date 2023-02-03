@@ -1,63 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+<!-- Basado en los papers oficiales
+        https://developer.android.com/develop/ui/views/components/dialogs
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/et_name"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.MiCompra.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.MiCompra.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/hello_first_fragment"
-        app:backgroundTint="#8DEDA3"
-        app:srcCompat="@drawable/ic_baseline_add_24" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#3E80ED99"
-        android:paddingTop="50dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-            <!--https://stackoverflow.com/questions/1957831/center-a-button-in-a-linear-layout -->
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                android:paddingTop="10dp" />
-
-            <!--<Button
-                android:id="@+id/button_first"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/next"
-                android:textAlignment="center" />-->
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="4dp"
+        android:hint="@string/name_market" />
+</LinearLayout>

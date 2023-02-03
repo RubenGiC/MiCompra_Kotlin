@@ -32,6 +32,13 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <activity android:name=".AddItem"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/add_item"
+            android:theme="@style/Theme.MiCompra.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

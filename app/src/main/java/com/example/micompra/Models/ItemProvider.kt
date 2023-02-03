@@ -1,17 +1,14 @@
 package com.example.micompra.Models
 
-import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
-import android.widget.Toast
 import com.example.micompra.FeedReaderContract
 import com.example.micompra.FeedReaderDbHelper
-import kotlin.random.Random
 
 class ItemProvider {
     companion object{
         /**
-         * Genera la lista de prueba
+         * Genera la lista de items de la base de datos
          */
         fun listItems(context: Context): MutableList<Item>{
 
@@ -28,11 +25,11 @@ class ItemProvider {
             val cursor = db.query(
                 FeedReaderContract.FeedEntry.TABLE_ITEMS,   // nombre de la tabla a acceder
                 projection,                                 // columnas a devolver
-                null,                                       // las columnas para el WHERE clause
-                null,                                       // los valores para el WHERE clause
-                null,                                       // para grupos de columnas
-                null,                                       // para filtrar por grupos de columnas
-                null                                        // para ordenar los valores a devolver
+                null,                               // las columnas para el WHERE clause
+                null,                            // los valores para el WHERE clause
+                null,                                // para grupos de columnas
+                null,                                 // para filtrar por grupos de columnas
+                null                                 // para ordenar los valores a devolver
             )
 
             // lista donde almacenara los valores de los items

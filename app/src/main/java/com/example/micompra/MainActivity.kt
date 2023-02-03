@@ -2,7 +2,6 @@ package com.example.micompra
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,14 +9,13 @@ import androidx.navigation.ui.navigateUp
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.micompra.Models.ItemProvider
+import com.example.micompra.Models.MarketProvider
 import com.example.micompra.databinding.ActivityMainBinding
 
 /**
@@ -95,13 +93,50 @@ class MainActivity : AppCompatActivity() {
         }
 
         //cuando pulse aparecerá un pop up para añadir un nuevo market
-        binding.addMarketFab.setOnClickListener{view ->
-            Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
+        binding.addMarketFab.setOnClickListener{
+
+            // Accedemos al layout activity_add_market
+            val inflater = this.layoutInflater;
+            val input = inflater.inflate(R.layout.activity_add_market, null)
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Añadir supermercado")
+                .setView(input)
+                .setPositiveButton("Guardar"){_, _ ->
+
+                    //accedemos al EditText
+                    val et_name = input.findViewById<EditText>(R.id.et_name)
+                    //guardamos el nombre del supermercado
+                    val name = et_name.text.toString()
+
+                    //añadimos el supermercado a la base de datos
+                    val result = addMarket(name)
+
+                    //comprobamos que el resultado no es nulo
+                    if (result != null) {
+                        //si es mayor que 0 se a añadido correctamente
+                        if(result > 0) {
+                            Toast.makeText(this, "Añadido ${name}, ${result}", Toast.LENGTH_SHORT).show()
+
+                        //en caso contrario ya existe dicho supermercado
+                        }else{
+                            Toast.makeText(this, "Ya existe le superpercado ${name}, ${result}", Toast.LENGTH_LONG).show()
+                        }
+
+                    //si lo es ha habido un error al escribir la base de datos
+                    }else{
+                        Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
+                    }
+                }
+                .setNegativeButton("Cancelar", null)
+                .create()
+
+            dialog.show()
         }
 
         //cuando pulse ira a otra vista para añadir un nuevo producto
         binding.addItemFab.setOnClickListener { view ->
-            Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this,AddItem::class.java))
         }
 
         //cuando pulse aparecerá un pop up para añadir un precio de un producto de un supermercado concreto
@@ -129,6 +164,14 @@ class MainActivity : AppCompatActivity() {
         rv_item.adapter = adapter
     }
 
+    /**
+     * Comprueba si esta ya añadido o no y si no esta añadido lo añade a la base de datos
+     */
+    fun addMarket(name: String): Long? {
+
+        return MarketProvider.addMarket(this, name)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -137,7 +180,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        Toast.makeText(this, item.itemId.toString(), Toast.LENGTH_LONG)
         when (item.itemId){
             R.id.action_settings -> Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
         }
