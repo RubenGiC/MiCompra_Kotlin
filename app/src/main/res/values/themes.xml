@@ -1,4 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- DISEÑOS, COLORES Y ANIMACIONES BASADOS EN
+            https://m2.material.io/design/platform-guidance/android-icons.html
+            https://m2.material.io/resources
+    -->
     <!-- Base application theme. -->
     <style name="Theme.MiCompra" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
