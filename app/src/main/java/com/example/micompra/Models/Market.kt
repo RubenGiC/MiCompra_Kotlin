@@ -6,4 +6,4 @@ package com.example.micompra.Models
  * - id     entero
  * - name   texto
  */
-data class Market(val id:Int, var name:String)
+data class Market(val id:Long, var name:String)

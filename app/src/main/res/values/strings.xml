@@ -14,4 +14,6 @@
     <string name="supermercado">Supermercado</string>
     <string name="imagen">Imagen</string>
     <string name="min_price">Precio mas bajo:</string>
+    <string name="add">Añadir</string>
+    <string name="cerrar">Cerrar</string>
 </resources>
