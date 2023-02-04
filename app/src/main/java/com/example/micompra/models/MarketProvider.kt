@@ -1,9 +1,8 @@
-package com.example.micompra.Models
+package com.example.micompra.models
 
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
-import android.widget.Toast
 import com.example.micompra.FeedReaderContract
 import com.example.micompra.FeedReaderDbHelper
 
@@ -15,6 +14,54 @@ import com.example.micompra.FeedReaderDbHelper
 class MarketProvider {
 
     companion object{
+
+        /**
+         * Genera la lista de supermercados que hay
+         */
+        fun listMarkets(context: Context): MutableList<Market>{
+
+            //accedemos a la base de datos
+            val dbHelper = FeedReaderDbHelper(context)
+
+            //indicamos que vamos a leer los datos de la base de datos
+            val db = dbHelper.readableDatabase
+
+            //indicamos las columnas a devolver
+            val projection = arrayOf(BaseColumns._ID, FeedReaderContract.FeedEntry.COLUMN_NAME)
+
+            //indicamos que queremos ordenar los valores a devolver por el nombre descendentemente
+            val sortOrd = "${FeedReaderContract.FeedEntry.COLUMN_NAME} ASC"
+
+            //creamos la query
+            val cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_MARKET,  // Tabla a acceder
+                projection,                                 // Columnas a devolver
+                null,                               // Filtramos por columnas indicadas
+                null,                            // Indicamos los argumentos de dichas columnas a filtrar
+                null,                               // Para grupo de columnas
+                null,                                // Para filtrar por grupo de columnas
+                sortOrd                                    // Ordenar por columna los valores a devolver
+            )
+
+            //creamos la lista mutable
+            val lista:MutableList<Market> = mutableListOf()
+
+            //si hay elementos en el cursor
+            with(cursor){
+                //recorremos los elementos del cursor
+                while (moveToNext()){
+                    //accedemos al id y al nombre del supermercado
+                    val id = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                    val name = getString(getColumnIndexOrThrow(FeedReaderContract.FeedEntry.COLUMN_NAME))
+
+                    //añadimos el objeto Market a la lista
+                    lista.add(Market(id, name.replaceFirstChar(Char::titlecase)))
+                }
+            }
+
+            return lista
+        }
+
         /**
          * Comprueba si esta el supermercado ya o no
          */
@@ -56,10 +103,10 @@ class MarketProvider {
         /**
          * Añade un nuevo supermercado
          */
-        fun addMarket(context: Context, name: String): Long? {
+        fun addMarket(context: Context, name: String): Long {
 
             //comprobamos que el campo no este vacio
-            if(name.length > 0) {
+            if(name.isNotEmpty()) {
                 //lo ponemos en minuscula para que la comprobación de si ya existe el supermercado
                 val name_min = name.lowercase()
 
@@ -80,11 +127,8 @@ class MarketProvider {
                         put(FeedReaderContract.FeedEntry.COLUMN_NAME, name_min)
                     }
 
-                    //Insertamos los nuevos valores
-                    val newRowId =
-                        db.insert(FeedReaderContract.FeedEntry.TABLE_MARKET, null, values)
-
-                    return newRowId
+                    //Insertamos los nuevos valores, devolviendonos el id o un error si se ha insertado mal
+                    return db.insert(FeedReaderContract.FeedEntry.TABLE_MARKET, null, values)
                 }
             }else{
                 return -2

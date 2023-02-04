@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.micompra.Models.Item
+import com.example.micompra.models.Item
 
 /**
  * Clase que rellenara la listview de forma personalizada
@@ -28,7 +28,7 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items.get(position)
 
-        holder.bind(item, context)
+        holder.bind(item)
     }
 
     fun setItemList(items: List<Item>){
@@ -63,7 +63,7 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
         /**
          * Rellena los datos
          */
-        fun bind(item:Item, context: Context){
+        fun bind(item:Item){//, context: Context
             titulo.text = item.name
             //NO FUNCIONA
             /*itemView.setOnClickListener(View.OnClickListener {

@@ -1,4 +1,4 @@
-package com.example.micompra.Models
+package com.example.micompra.models
 
 //Modelo Supermercado
 /**

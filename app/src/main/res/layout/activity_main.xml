@@ -58,7 +58,8 @@
             app:fabSize="normal"
             android:tint="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/add_fab"
-            app:layout_constraintEnd_toEndOf="@+id/add_fab" />
+            app:layout_constraintEnd_toEndOf="@+id/add_fab"
+            android:contentDescription="@string/add_market" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -71,7 +72,7 @@
             app:layout_constraintBottom_toTopOf="@id/add_market_fab"
             app:layout_constraintEnd_toEndOf="@id/add_market_fab"
             app:layout_constraintStart_toStartOf="@id/add_market_fab"
-            />
+            android:contentDescription="@string/add_item" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
             app:layout_constraintBottom_toTopOf="@id/add_item_fab"
             app:layout_constraintEnd_toEndOf="@id/add_item_fab"
             app:layout_constraintStart_toStartOf="@id/add_item_fab"
-            />
+            android:contentDescription="@string/add_price" />
 
         <ScrollView
             android:layout_width="match_parent"

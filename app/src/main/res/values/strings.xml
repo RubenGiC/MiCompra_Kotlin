@@ -19,4 +19,7 @@
     <string name="add_item">Añadir producto</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cero">0.0€</string>
+    <string name="add_market">Añadir supermercado</string>
+    <string name="add_price">Añadir precio</string>
 </resources>

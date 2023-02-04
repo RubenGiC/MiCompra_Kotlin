@@ -9,18 +9,19 @@ import androidx.navigation.ui.navigateUp
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.micompra.Models.Item
-import com.example.micompra.Models.ItemProvider
-import com.example.micompra.Models.MarketProvider
+import com.example.micompra.models.Item
+import com.example.micompra.models.ItemProvider
+import com.example.micompra.models.MarketProvider
 import com.example.micompra.databinding.ActivityMainBinding
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 /**
@@ -46,9 +47,9 @@ class MainActivity : AppCompatActivity() {
     /**
      * Inicializamos el RecyclerView y el adaptador
      */
-    lateinit var rv_item: RecyclerView
-    val adapter:AdapterItems= AdapterItems()
-    lateinit var lista: MutableList<Item>
+    private lateinit var rv_item: RecyclerView
+    private val adapter:AdapterItems= AdapterItems()
+    private lateinit var lista: MutableList<Item>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         binding.addFab.shrink()
 
         //cuando pulse el floatting button principal se desplegara el resto de floatting buttons
-        binding.addFab.setOnClickListener { view ->
+        binding.addFab.setOnClickListener {
 
             //comprobamos que este a false (!) y no nulo (!!)
             isAllFabsVisible = if(!isAllFabsVisible!!){
@@ -111,14 +112,14 @@ class MainActivity : AppCompatActivity() {
 
         //cuando pulse aparecerá un pop up para añadir un precio de un producto de un supermercado concreto
         binding.addPriceFab.setOnClickListener {
-            Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
+            addDialogPrice()
         }
     }
 
     /**
      * Crea el contenido del RecyclerView
      */
-    fun setUpRecyclerView(){
+    private fun setUpRecyclerView(){
         lista = ItemProvider.listItems(this)
 
         rv_item = binding.rvItems //accedo al recyclerView
@@ -138,18 +139,21 @@ class MainActivity : AppCompatActivity() {
         update()
     }
 
-    fun update(){
+    private fun update(){
         lista = ItemProvider.listItems(this)
         adapter.AdapterItems(lista, this)//crea el adaptador para el RecyclerView
-        adapter!!.notifyDataSetChanged()
+        //adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(lista.size-1)
     }
 
-    fun addDialogMarket(){
+    private fun addDialogMarket(){
         // Accedemos al layout activity_add_market
         val input = this.layoutInflater.inflate(R.layout.activity_add_market, null)
 
+        //accdedemos al campo TextInputLayout
         val til_name = input.findViewById<TextInputLayout>(R.id.til_name)
 
+        //creamos el dialogo
         val dialog = AlertDialog.Builder(this)
             .setTitle("Añadir supermercado")
             .setView(input)
@@ -158,11 +162,107 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Cancelar", null)
             .create()
 
+        //acción con los botones (guardar/cancelar)
         dialog.setOnShowListener {
+            //accedemos al boton guardar
             val acept: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
+            //cuando pulse guardar
             acept.setOnClickListener {
                 //accedemos al EditText
+                val et_name = input.findViewById<EditText>(R.id.et_name)
+                //guardamos el nombre del supermercado
+                val name = et_name.text.toString()
+
+                //añadimos el supermercado a la base de datos
+                val result = addMarket(name)
+
+                //comprobamos que se ha añadido correctamente
+                if(result > 0) {
+                    Toast.makeText(this, HtmlCompat.fromHtml("Añadido <b>${name}</b>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+
+                    // si esta vacio, muestra un mensaje de error
+                }else if(result == ERROR_EMPTY){
+                    til_name.error = "Está vacío"
+                }
+                else{
+                    // https://stackoverflow.com/questions/37904739/html-fromhtml-deprecated-in-android-n
+                    til_name.error = HtmlCompat.fromHtml("Ya existe <b>${name}</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+                }
+            }
+        }
+        //mostramos el dialogo
+        dialog.show()
+    }
+
+    /**
+     * Añade un precio a un producto y supermercado concreto
+     *
+     * https://universoandroidhn.blogspot.com/2020/03/como-crea-un-spinner-utilizando-sqlite.html
+     */
+    private fun addDialogPrice(){
+        // Accedemos al layout activity_add_market
+        val input = this.layoutInflater.inflate(R.layout.activity_add_price, null)
+
+        //obtenemos la lista de productos
+        val items = ItemProvider.listItemsSort(this, 1)
+
+        //generamos una lista de strings de la anterior lista
+        val list_items_string: MutableList<String> = mutableListOf()
+
+        for( i in items){
+            list_items_string.add(i.name)
+        }
+
+        //creamos el adapter para el spinner
+        val spItemsAdapter:ArrayAdapter<String> = ArrayAdapter(this, androidx.transition.R.layout.support_simple_spinner_dropdown_item,list_items_string)
+
+        //accdedemos al spinner de productos
+        val spItems = input.findViewById<Spinner>(R.id.s_productos)
+
+        //le añadimos el adaptador
+        spItems.adapter = spItemsAdapter
+
+        //obtenemos la lista de supermercados
+        val markets = MarketProvider.listMarkets(this)
+
+        //generamos una lista de strings de la anterior lista
+        val list_markets_string: MutableList<String> = mutableListOf()
+
+        for( i in markets){
+            list_markets_string.add(i.name)
+        }
+
+        //creamos el adapter para el spinner
+        val spMarketsAdapter:ArrayAdapter<String> = ArrayAdapter(this, androidx.transition.R.layout.support_simple_spinner_dropdown_item,list_markets_string)
+
+        //accdedemos al spinner de supermercados
+        val spMarkets = input.findViewById<Spinner>(R.id.s_market)
+
+        //le añadimos el adaptador
+        spMarkets.adapter = spMarketsAdapter
+
+        //accdedemos al campo TextInputLayout
+        val til_name = input.findViewById<TextInputLayout>(R.id.til_price)
+
+        //creamos el dialogo
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Añadir supermercado")
+            .setView(input)
+            .setCancelable(false)
+            .setPositiveButton("Guardar", null)
+            .setNegativeButton("Cancelar", null)
+            .create()
+
+        //acción con los botones (guardar/cancelar)
+        dialog.setOnShowListener {
+            //accedemos al boton guardar
+            val acept: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+            //cuando pulse guardar
+            acept.setOnClickListener {
+                /*//accedemos al EditText
                 val et_name = input.findViewById<EditText>(R.id.et_name)
                 //guardamos el nombre del supermercado
                 val name = et_name.text.toString()
@@ -189,17 +289,18 @@ class MainActivity : AppCompatActivity() {
                     //si lo es ha habido un error al escribir la base de datos
                 }else{
                     Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
-                }
+                }*/
+                Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
             }
         }
-
+        //mostramos el dialogo
         dialog.show()
     }
 
     /**
      * Comprueba si esta ya añadido o no y si no esta añadido lo añade a la base de datos
      */
-    fun addMarket(name: String): Long? {
+    private fun addMarket(name: String): Long {
 
         return MarketProvider.addMarket(this, name)
     }

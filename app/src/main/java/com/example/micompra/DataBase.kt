@@ -30,8 +30,8 @@ object FeedReaderContract{
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${FeedEntry.COLUMN_NAME} TEXT)"
 
-    internal val SQL_DELETE_ITEMS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_ITEMS}"
-    internal val SQL_DELETE_MARKETS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_MARKET}"
+    internal const val SQL_DELETE_ITEMS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_ITEMS}"
+    internal const val SQL_DELETE_MARKETS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_MARKET}"
 }
 
 class FeedReaderDbHelper(context: Context): SQLiteOpenHelper(context, DATABAASE_NAME, null, DATABASE_VERSION) {
