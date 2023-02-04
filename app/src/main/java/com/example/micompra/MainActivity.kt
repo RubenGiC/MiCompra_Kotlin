@@ -12,8 +12,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.micompra.Models.Item
 import com.example.micompra.Models.ItemProvider
 import com.example.micompra.Models.MarketProvider
 import com.example.micompra.databinding.ActivityMainBinding
@@ -21,6 +23,7 @@ import com.example.micompra.databinding.ActivityMainBinding
 /**
  * IDEAS
  * https://www.geeksforgeeks.org/theming-floating-action-button-with-bottom-navigation-bar-in-android/
+ * Pull refresh en el RecyclerView
  *
  * Floatting button (esta ligeramente modificado a como viene)
  * https://www.geeksforgeeks.org/extended-floating-action-button-in-android-with-example/
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
      */
     lateinit var rv_item: RecyclerView
     val adapter:AdapterItems= AdapterItems()
+    lateinit var lista: MutableList<Item>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,68 +97,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         //cuando pulse aparecerá un pop up para añadir un nuevo market
-        binding.addMarketFab.setOnClickListener{
-
-            // Accedemos al layout activity_add_market
-            val inflater = this.layoutInflater;
-            val input = inflater.inflate(R.layout.activity_add_market, null)
-
-            val dialog = AlertDialog.Builder(this)
-                .setTitle("Añadir supermercado")
-                .setView(input)
-                .setPositiveButton("Guardar"){_, _ ->
-
-                    //accedemos al EditText
-                    val et_name = input.findViewById<EditText>(R.id.et_name)
-                    //guardamos el nombre del supermercado
-                    val name = et_name.text.toString()
-
-                    //añadimos el supermercado a la base de datos
-                    val result = addMarket(name)
-
-                    //comprobamos que el resultado no es nulo
-                    if (result != null) {
-                        //si es mayor que 0 se a añadido correctamente
-                        if(result > 0) {
-                            Toast.makeText(this, "Añadido ${name}, ${result}", Toast.LENGTH_SHORT).show()
-
-                        //en caso contrario ya existe dicho supermercado
-                        }else{
-                            Toast.makeText(this, "Ya existe le superpercado ${name}, ${result}", Toast.LENGTH_LONG).show()
-                        }
-
-                    //si lo es ha habido un error al escribir la base de datos
-                    }else{
-                        Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
-                    }
-                }
-                .setNegativeButton("Cancelar", null)
-                .create()
-
-            dialog.show()
+        binding.addMarketFab.setOnClickListener {
+            addDialogMarket()
         }
 
         //cuando pulse ira a otra vista para añadir un nuevo producto
-        binding.addItemFab.setOnClickListener { view ->
+        binding.addItemFab.setOnClickListener {
             startActivity(Intent(this,AddItem::class.java))
         }
 
         //cuando pulse aparecerá un pop up para añadir un precio de un producto de un supermercado concreto
-        binding.addPriceFab.setOnClickListener { view ->
+        binding.addPriceFab.setOnClickListener {
             Toast.makeText(this, "En proceso de creación", Toast.LENGTH_SHORT).show()
         }
-
-        /*binding.buttonFirst.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this,AddMarket::class.java)
-            startActivity(intent)
-        })*/
     }
 
     /**
      * Crea el contenido del RecyclerView
      */
     fun setUpRecyclerView(){
-        val lista = ItemProvider.listItems(this)
+        lista = ItemProvider.listItems(this)
 
         rv_item = binding.rvItems //accedo al recyclerView
         rv_item.layoutManager = GridLayoutManager(applicationContext, 2)
@@ -162,6 +124,64 @@ class MainActivity : AppCompatActivity() {
         //rv_item.layoutManager = LinearLayoutManager(this)
         adapter.AdapterItems(lista, this)//crea el adaptador para el RecyclerView
         rv_item.adapter = adapter
+    }
+
+    /**
+     * actualiza la lista al volver a la vista anterior
+     * https://stackoverflow.com/questions/5545217/back-button-and-refreshing-previous-activity
+     */
+    override fun onRestart() {
+        super.onRestart()
+        update()
+    }
+
+    fun update(){
+        lista = ItemProvider.listItems(this)
+        adapter.AdapterItems(lista, this)//crea el adaptador para el RecyclerView
+        adapter!!.notifyDataSetChanged()
+    }
+
+    fun addDialogMarket(){
+        // Accedemos al layout activity_add_market
+        val input = this.layoutInflater.inflate(R.layout.activity_add_market, null)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Añadir supermercado")
+            .setView(input)
+            .setPositiveButton("Guardar"){_, _ ->
+
+                //accedemos al EditText
+                val et_name = input.findViewById<EditText>(R.id.et_name)
+                //guardamos el nombre del supermercado
+                val name = et_name.text.toString()
+
+                //añadimos el supermercado a la base de datos
+                val result = addMarket(name)
+
+                //comprobamos que el resultado no es nulo
+                if (result != null) {
+                    //si es mayor que 0 se a añadido correctamente
+                    if(result > 0) {
+                        Toast.makeText(this, "Añadido ${name}", Toast.LENGTH_SHORT).show()
+
+                    // si devuelve -2 es que esta vacio
+                    }else if(result == ERROR_EMPTY){
+                        // https://stackoverflow.com/questions/37904739/html-fromhtml-deprecated-in-android-n
+                        Toast.makeText(this, HtmlCompat.fromHtml("El campo <b>${getString(R.string.name_market)}</b> esta vacio", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        Toast.makeText(this, "Ya existe le superpercado ${name}", Toast.LENGTH_LONG).show()
+                    }
+
+                    //si lo es ha habido un error al escribir la base de datos
+                }else{
+                    Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .create()
+
+        dialog.show()
     }
 
     /**

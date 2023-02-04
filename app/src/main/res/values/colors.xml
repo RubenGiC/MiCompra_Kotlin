@@ -17,6 +17,7 @@
     <color name="green_pastel">#57cc99</color>
     <color name="green_white_pastel">#80ed99</color>
     <color name="verde_claro_transparente">#8680ED99</color>
-    <color name="verde_fondo">#3E80ED99</color>
+    <color name="verde_fondo">#1A80ED99</color>
     <color name="verde_button">#8DEDA3</color>
+    <color name="color_icons">#454545</color>
 </resources>

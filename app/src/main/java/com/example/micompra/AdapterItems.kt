@@ -49,6 +49,8 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
         return ItemViewHolder(inflater.inflate(R.layout.row_item, parent, false))
     }
 
+    
+
     /**
      * ViewHolder personalizado haciendo referencia a los items de la vista que recibe
      */

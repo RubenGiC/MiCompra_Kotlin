@@ -58,30 +58,36 @@ class MarketProvider {
          */
         fun addMarket(context: Context, name: String): Long? {
 
-            //lo ponemos en minuscula para que la comprobación de si ya existe el supermercado
-            val name_min = name.lowercase()
+            //comprobamos que el campo no este vacio
+            if(name.length > 0) {
+                //lo ponemos en minuscula para que la comprobación de si ya existe el supermercado
+                val name_min = name.lowercase()
 
-            //comprobamos si existe el supermercado
-            val existe = isMarket(context, name_min)
+                //comprobamos si existe el supermercado
+                val existe = isMarket(context, name_min)
 
-            //si no existe
-            if(existe == 0){
+                //si no existe
+                if (existe == 0) {
 
-                // Accedemos a la base de datos
-                val dbHelper = FeedReaderDbHelper(context)
+                    // Accedemos a la base de datos
+                    val dbHelper = FeedReaderDbHelper(context)
 
-                //indicamos que vamos a escribir en la base de datos
-                val db = dbHelper.writableDatabase
+                    //indicamos que vamos a escribir en la base de datos
+                    val db = dbHelper.writableDatabase
 
-                //Creamos el mapa de valores, donde contiene el key (nombre de la columna) y el valor
-                val values = ContentValues().apply {
-                    put(FeedReaderContract.FeedEntry.COLUMN_NAME, name_min)
+                    //Creamos el mapa de valores, donde contiene el key (nombre de la columna) y el valor
+                    val values = ContentValues().apply {
+                        put(FeedReaderContract.FeedEntry.COLUMN_NAME, name_min)
+                    }
+
+                    //Insertamos los nuevos valores
+                    val newRowId =
+                        db.insert(FeedReaderContract.FeedEntry.TABLE_MARKET, null, values)
+
+                    return newRowId
                 }
-
-                //Insertamos los nuevos valores
-                val newRowId = db?.insert(FeedReaderContract.FeedEntry.TABLE_MARKET, null, values)
-
-                return newRowId
+            }else{
+                return -2
             }
 
             return -1

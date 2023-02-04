@@ -1,5 +1,6 @@
 package com.example.micompra.Models
 
+import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
 import com.example.micompra.FeedReaderContract
@@ -61,6 +62,81 @@ class ItemProvider {
 //            }
 
             return lista
+        }
+
+        fun isItem(context: Context, name: String): Int{
+
+            // Accedemos a la base de  datos
+            val dbHelper = FeedReaderDbHelper(context)
+
+            // Idicamos que queremos leer la base de datos
+            val db = dbHelper.readableDatabase
+
+            //indicamos las columnas a devolver
+            val projection = arrayOf(BaseColumns._ID, FeedReaderContract.FeedEntry.COLUMN_NAME)
+
+            // Filtramos por el nombre
+            val selection = "${FeedReaderContract.FeedEntry.COLUMN_NAME} = ?"
+            val selectionArgs = arrayOf(name)
+
+            //creamos la query
+            val cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_ITEMS,   // Tabla a acceder
+                projection,                                 // columnas a devolver
+                selection,                                  // columnas a filtrar
+                selectionArgs,                              // Argumentos de dichas columnas a filtrar
+                null,                                       // para grupos de columnas
+                null,                                       // para filtrar por grupos de columnas
+                null,                               // para ordenar los valores a devolver
+            )
+
+            //guardamos el numero de coincidencias
+            val entradas = cursor.count
+
+            //cerramos el cursor
+            cursor.close()
+
+            return entradas
+        }
+
+        fun addItem(context: Context, name: String): Long{
+
+            //comprobamos que el campo no este vacio
+            if(name.length > 0) {
+
+                //se pone en minuscular para una comprobación más facil
+                val name_min = name.lowercase()
+
+                //comprobamos si existe
+                val exist = isItem(context, name_min)
+
+                //si no existe se añade
+                if (exist == 0) {
+
+                    // Accedemos a la base de datos
+                    val dbHelper = FeedReaderDbHelper(context)
+
+                    // Indicamos que vamos a modificar la base de datos
+                    val db = dbHelper.writableDatabase
+
+                    // creamos el mapa de valores, key = combre de la columna, valor
+                    val values = ContentValues().apply {
+                        put(FeedReaderContract.FeedEntry.COLUMN_NAME, name_min)
+                    }
+
+                    // Insertamos en la tabla
+                    val newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_ITEMS, null, values)
+
+                    return newRowId
+
+                }
+            }else{
+                //si esta vacio
+                return -2
+            }
+
+            //en caso contrario existe
+            return -1
         }
     }
 }
