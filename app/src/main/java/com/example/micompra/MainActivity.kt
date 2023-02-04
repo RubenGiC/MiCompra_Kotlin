@@ -9,6 +9,7 @@ import androidx.navigation.ui.navigateUp
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,6 +20,8 @@ import com.example.micompra.Models.Item
 import com.example.micompra.Models.ItemProvider
 import com.example.micompra.Models.MarketProvider
 import com.example.micompra.databinding.ActivityMainBinding
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 /**
  * IDEAS
@@ -145,11 +148,20 @@ class MainActivity : AppCompatActivity() {
         // Accedemos al layout activity_add_market
         val input = this.layoutInflater.inflate(R.layout.activity_add_market, null)
 
+        val til_name = input.findViewById<TextInputLayout>(R.id.til_name)
+
         val dialog = AlertDialog.Builder(this)
             .setTitle("Añadir supermercado")
             .setView(input)
-            .setPositiveButton("Guardar"){_, _ ->
+            .setCancelable(false)
+            .setPositiveButton("Guardar", null)
+            .setNegativeButton("Cancelar", null)
+            .create()
 
+        dialog.setOnShowListener {
+            val acept: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+            acept.setOnClickListener {
                 //accedemos al EditText
                 val et_name = input.findViewById<EditText>(R.id.et_name)
                 //guardamos el nombre del supermercado
@@ -162,15 +174,16 @@ class MainActivity : AppCompatActivity() {
                 if (result != null) {
                     //si es mayor que 0 se a añadido correctamente
                     if(result > 0) {
-                        Toast.makeText(this, "Añadido ${name}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, HtmlCompat.fromHtml("Añadido <b>${name}</b>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
 
-                    // si devuelve -2 es que esta vacio
+                        // si esta vacio, muestra un mensaje de error
                     }else if(result == ERROR_EMPTY){
-                        // https://stackoverflow.com/questions/37904739/html-fromhtml-deprecated-in-android-n
-                        Toast.makeText(this, HtmlCompat.fromHtml("El campo <b>${getString(R.string.name_market)}</b> esta vacio", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG).show()
+                        til_name.error = "Está vacío"
                     }
                     else{
-                        Toast.makeText(this, "Ya existe le superpercado ${name}", Toast.LENGTH_LONG).show()
+                        // https://stackoverflow.com/questions/37904739/html-fromhtml-deprecated-in-android-n
+                        til_name.error = HtmlCompat.fromHtml("Ya existe <b>${name}</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                     }
 
                     //si lo es ha habido un error al escribir la base de datos
@@ -178,8 +191,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
                 }
             }
-            .setNegativeButton("Cancelar", null)
-            .create()
+        }
 
         dialog.show()
     }

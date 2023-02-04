@@ -37,19 +37,16 @@ class AddItem: AppCompatActivity() {
 
             //comprobamos que el resultado no es nulo
             if (result != null) {
+                //si esta vacio, salta un error
                 if(result == ERROR_EMPTY){
-                    Toast.makeText(
-                        this,
-                        HtmlCompat.fromHtml(
-                            "El campo <b>${getString(R.string.name_item)}</b> esta vacio",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    binding.tilName.error = "Está vacío"
+                //si nos devuelve un valor positivo distinto de 0 (id), se ha guardado correctamente
                 }else if(result > 0){
-                    Toast.makeText(this, "Producto ${producto} añadido", Toast.LENGTH_SHORT).show()
-                    finish()
+                    Toast.makeText(this, HtmlCompat.fromHtml("Producto <b>${producto}</b> añadido", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_SHORT).show()
+                    finish()//para volver a la vista anterior
+                //en caso contrario, el valor ya estaba metido en la base de datos de antes
                 }else{
-                    Toast.makeText(this, "Ya existe el producto ${producto}", Toast.LENGTH_LONG).show()
+                    binding.tilName.error = HtmlCompat.fromHtml("Ya existe <b>${producto}</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 }
             }else{
                 Toast.makeText(this, "Error en la Base de Datos", Toast.LENGTH_LONG).show()
@@ -57,11 +54,4 @@ class AddItem: AppCompatActivity() {
         }
 
     }
-
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            androidx.appcompat.R.id.home -> onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
-    }*/
 }
