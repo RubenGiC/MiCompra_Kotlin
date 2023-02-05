@@ -20,4 +20,5 @@
     <color name="verde_fondo">#1A80ED99</color>
     <color name="verde_button">#8DEDA3</color>
     <color name="color_icons">#454545</color>
+    <color name="box_stroke_error">#C52525</color>
 </resources>

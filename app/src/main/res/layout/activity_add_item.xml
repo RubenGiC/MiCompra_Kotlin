@@ -46,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/til_name"
+                app:boxStrokeErrorColor="@color/box_stroke_error"
                 android:hint="@string/name_item">
 
                 <com.google.android.material.textfield.TextInputEditText

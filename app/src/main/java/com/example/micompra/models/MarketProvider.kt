@@ -108,7 +108,8 @@ class MarketProvider {
             //comprobamos que el campo no este vacio
             if(name.isNotEmpty()) {
                 //lo ponemos en minuscula para que la comprobación de si ya existe el supermercado
-                val name_min = name.lowercase()
+                //y eliminamos los espacios del principio y final
+                val name_min = name.lowercase().trim()
 
                 //comprobamos si existe el supermercado
                 val existe = isMarket(context, name_min)

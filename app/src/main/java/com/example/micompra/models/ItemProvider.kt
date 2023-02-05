@@ -136,7 +136,8 @@ class ItemProvider {
             if(name.isNotEmpty()) {
 
                 //se pone en minuscular para una comprobación más facil
-                val name_min = name.lowercase()
+                //y eliminamos los espacios del principio y final
+                val name_min = name.lowercase().trim()
 
                 //comprobamos si existe
                 val exist = isItem(context, name_min)
