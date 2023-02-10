@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.micompra.models.Item
+import com.example.micompra.models.AdapterItem
 
 /**
  * Clase que rellenara la listview de forma personalizada
@@ -14,11 +14,14 @@ import com.example.micompra.models.Item
  */
 class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
 
-    var items:MutableList<Item> = ArrayList()
+    var productos:MutableList<AdapterItem> = ArrayList()
     lateinit var context: Context
 
-    fun AdapterItems(items: MutableList<Item>, context: Context){
-        this.items = items
+    /**
+     * Inicialización de los datos
+     */
+    fun AdapterItems(productos: MutableList<AdapterItem>, context: Context){
+        this.productos = productos
         this.context = context
     }
 
@@ -26,20 +29,23 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
      * Recoge las posiciones de la lista items y las pasa a la clase ItemViewHolder
      */
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val item = items.get(position)
+        val producto = productos.get(position)
 
-        holder.bind(item)
+        holder.bind(producto)
     }
 
-    fun setItemList(items: List<Item>){
-        this.items = items.toMutableList()
-        notifyDataSetChanged()
+    /**
+     * Para modificar la lista
+     */
+    fun setItemList(productos: List<AdapterItem>){
+        this.productos = productos.toMutableList()
+        notifyDataSetChanged()// notifica del cambio
     }
 
     /**
      * Función Get que devuelve el tamaño de la lista
      */
-    override fun getItemCount(): Int { return items.size }
+    override fun getItemCount(): Int { return productos.size }
 
     /**
      * Crea el objeto ViewHolder para el RecyclerView
@@ -63,8 +69,11 @@ class AdapterItems: RecyclerView.Adapter<AdapterItems.ItemViewHolder>(){
         /**
          * Rellena los datos
          */
-        fun bind(item:Item){//, context: Context
-            titulo.text = item.name
+        fun bind(producto:AdapterItem){//, context: Context
+            titulo.text = producto.item.name
+            market.text = producto.market.name
+            precio.text = producto.price.toString()+" €"
+
             //NO FUNCIONA
             /*itemView.setOnClickListener(View.OnClickListener {
                 Toast.makeText(context,item.toString(), Toast.LENGTH_LONG)

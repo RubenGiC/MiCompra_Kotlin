@@ -3,6 +3,8 @@ package com.example.micompra.models
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
+import com.example.micompra.ERROR_EMPTY
+import com.example.micompra.ERROR_EXIST
 import com.example.micompra.FeedReaderContract
 import com.example.micompra.FeedReaderDbHelper
 
@@ -58,6 +60,9 @@ class MarketProvider {
                     lista.add(Market(id, name.replaceFirstChar(Char::titlecase)))
                 }
             }
+
+            //cerramos el cursor
+            cursor.close()
 
             return lista
         }
@@ -132,10 +137,10 @@ class MarketProvider {
                     return db.insert(FeedReaderContract.FeedEntry.TABLE_MARKET, null, values)
                 }
             }else{
-                return -2
+                return ERROR_EMPTY
             }
 
-            return -1
+            return ERROR_EXIST
         }
     }
 }

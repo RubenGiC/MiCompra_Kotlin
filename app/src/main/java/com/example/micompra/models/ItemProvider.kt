@@ -3,6 +3,8 @@ package com.example.micompra.models
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
+import com.example.micompra.ERROR_EMPTY
+import com.example.micompra.ERROR_EXIST
 import com.example.micompra.FeedReaderContract
 import com.example.micompra.FeedReaderDbHelper
 
@@ -36,19 +38,28 @@ class ItemProvider {
             // lista donde almacenara los valores de los items
             val lista:MutableList<Item> = mutableListOf()
 
+            //recorremos los resultados
             with(cursor){
                 while (moveToNext()) {
 
+                    //extraemos el id y el nombre
                     val id = getLong(getColumnIndexOrThrow(BaseColumns._ID))
                     val name = getString(getColumnIndexOrThrow(FeedReaderContract.FeedEntry.COLUMN_NAME))
+                    //generamos un obejto Item y lo añadimos a la lista de items
                     lista.add(Item(id, name.replaceFirstChar(Char::titlecase)))
+                    //NOTA: ponemos el primer caracter del string mayuscula
                 }
             }
+            //cerramos el cursor
             cursor.close()
 
             return lista
         }
 
+        /**
+         * Genera la lista de items ordenada:
+         * - ord: 0 is DESC and 1 is ASC
+         */
         fun listItemsSort(context: Context, ord: Int): MutableList<Item>{
 
             //accedemos a la base de datos
@@ -60,6 +71,7 @@ class ItemProvider {
             // definimos las columnas que nos interesan leer de la base de datos
             val projection = arrayOf(BaseColumns._ID, FeedReaderContract.FeedEntry.COLUMN_NAME)
 
+            //tipo de ordenación
             var order = "ASC"
             if(ord == 0){
                 order = "DESC"
@@ -82,19 +94,27 @@ class ItemProvider {
             // lista donde almacenara los valores de los items
             val lista:MutableList<Item> = mutableListOf()
 
+            //recorremos los resultados
             with(cursor){
                 while (moveToNext()) {
 
+                    //obtenemos el id y el nombre
                     val id = getLong(getColumnIndexOrThrow(BaseColumns._ID))
                     val name = getString(getColumnIndexOrThrow(FeedReaderContract.FeedEntry.COLUMN_NAME))
+
+                    //creamos el objeto Item y lo añadimos a la lista
                     lista.add(Item(id, name.replaceFirstChar(Char::titlecase)))
                 }
             }
-            cursor.close()
+            cursor.close()// cerramos el cursor
 
             return lista
         }
 
+        /**
+         * Comprueba si existe o no el producto:
+         * - name: nombre del producto
+         */
         fun isItem(context: Context, name: String): Int{
 
             // Accedemos a la base de  datos
@@ -130,6 +150,9 @@ class ItemProvider {
             return entradas
         }
 
+        /**
+         * Añade un nuevo producto
+         */
         fun addItem(context: Context, name: String): Long{
 
             //comprobamos que el campo no este vacio
@@ -162,11 +185,11 @@ class ItemProvider {
                 }
             }else{
                 //si esta vacio
-                return -2
+                return ERROR_EMPTY
             }
 
             //en caso contrario existe
-            return -1
+            return ERROR_EXIST
         }
     }
 }

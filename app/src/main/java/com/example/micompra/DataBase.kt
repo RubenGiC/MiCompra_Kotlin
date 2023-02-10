@@ -22,6 +22,7 @@ object FeedReaderContract{
         const val COLUMN_PRICE = "price"
     }
 
+    //creación de las tablas
     internal const val SQL_CREATE_ITEMS = "CREATE TABLE ${FeedEntry.TABLE_ITEMS}(" +
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${FeedEntry.COLUMN_NAME} TEXT)"
@@ -30,8 +31,16 @@ object FeedReaderContract{
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${FeedEntry.COLUMN_NAME} TEXT)"
 
+    internal const val SQL_CREATE_PRICE = "CREATE TABLE ${FeedEntry.TABLE_PRICE}(" +
+            "${FeedEntry.COLUMN_ITEM} INTEGER NOT NULL," +
+            "${FeedEntry.COLUMN_MARKET} INTEGER NOT NULL," +
+            "${FeedEntry.COLUMN_PRICE} REAL," +
+            "PRIMARY KEY (${FeedEntry.COLUMN_ITEM}, ${FeedEntry.COLUMN_MARKET}))"
+
+    //borra las tablas
     internal const val SQL_DELETE_ITEMS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_ITEMS}"
     internal const val SQL_DELETE_MARKETS = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_MARKET}"
+    internal const val SQL_DELETE_PRICES = "DROP TABLE IF EXISTS ${FeedEntry.TABLE_PRICE}"
 }
 
 class FeedReaderDbHelper(context: Context): SQLiteOpenHelper(context, DATABAASE_NAME, null, DATABASE_VERSION) {
@@ -40,14 +49,18 @@ class FeedReaderDbHelper(context: Context): SQLiteOpenHelper(context, DATABAASE_
         if (db != null) {//POR SI ESTA A NULL
             db.execSQL(FeedReaderContract.SQL_CREATE_ITEMS)
             db.execSQL(FeedReaderContract.SQL_CREATE_MARKET)
+            db.execSQL(FeedReaderContract.SQL_CREATE_PRICE)
         }
     }
 
     //actualiza la base de datos
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         if (db != null) {
+            //borra las tablas existentes
             db.execSQL(FeedReaderContract.SQL_DELETE_ITEMS)
             db.execSQL(FeedReaderContract.SQL_DELETE_MARKETS)
+            db.execSQL(FeedReaderContract.SQL_DELETE_PRICES)
+            //y las crea
             onCreate(db)
         }
     }
@@ -59,6 +72,6 @@ class FeedReaderDbHelper(context: Context): SQLiteOpenHelper(context, DATABAASE_
 
     companion object{
         const val DATABAASE_NAME = "MiCompra.db" // nombre de la base de datos
-        const val DATABASE_VERSION = 2 // versión
+        const val DATABASE_VERSION = 10 // versión
     }
 }
