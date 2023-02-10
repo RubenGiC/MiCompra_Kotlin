@@ -34,7 +34,7 @@ class AddItem: AppCompatActivity() {
         binding.bAdd.setOnClickListener {
 
             //extrae el string del editText
-            val producto = binding.etName.text.toString()
+            val producto = binding.etName.text.toString().trim()
             //añadimos el producto
             val result = addItem(this, producto)
 
