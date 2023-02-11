@@ -33,7 +33,7 @@ class AddItem: AppCompatActivity() {
         //cuando pulse en añadir el producto
         binding.bAdd.setOnClickListener {
 
-            //extrae el string del editText
+            //extrae el string del editText y eliminamos los espacios del principio y final
             val producto = binding.etName.text.toString().trim()
             //añadimos el producto
             val result = addItem(this, producto)
